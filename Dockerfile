@@ -1,9 +1,9 @@
-# Usar uma imagem Node leve
 FROM node:18-slim
 
-# Instalar dependências do sistema para o Chromium
+# Instalar dependências do sistema e Chrome
 RUN apt-get update && apt-get install -y \
     wget \
+    gnupg \
     ca-certificates \
     fonts-liberation \
     libappindicator3-1 \
@@ -19,21 +19,35 @@ RUN apt-get update && apt-get install -y \
     libxcomposite1 \
     libxdamage1 \
     libxrandr2 \
+    libxshmfence1 \
+    libxss1 \
     xdg-utils \
     libgbm-dev \
+    libu2f-udev \
+    curl \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# Criar diretório de trabalho
+# Instalar o Google Chrome
+RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-linux-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable && \
+    rm -rf /var/lib/apt/lists/*
+
+# Diretório de trabalho
 WORKDIR /app
 
-# Copiar os arquivos da aplicação
+# Copiar arquivos
 COPY . .
 
 # Instalar dependências
 RUN npm install
 
-# Expor a porta da aplicação
+# Criar diretório de uploads
+RUN mkdir -p /app/uploads
+
+# Expor a porta usada
 EXPOSE 3000
 
-# Comando para iniciar a aplicação
+# Iniciar aplicação
 CMD ["node", "index.js"]
