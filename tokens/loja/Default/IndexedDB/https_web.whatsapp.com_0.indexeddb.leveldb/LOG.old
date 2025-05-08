@@ -1,0 +1,19 @@
+2025/05/08-19:30:22.951 36eef Reusing MANIFEST /home/allanfpc/venom/tokens/loja/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/05/08-19:30:22.952 36eef Recovering log #133
+2025/05/08-19:30:22.961 36eef Reusing old log /home/allanfpc/venom/tokens/loja/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000133.log 
+2025/05/08-19:30:24.447 36ef1 Level-0 table #141: started
+2025/05/08-19:30:24.456 36ef1 Level-0 table #141: 194756 bytes OK
+2025/05/08-19:30:24.459 36ef1 Delete type=0 #133
+2025/05/08-19:30:24.459 36eef Manual compaction at level-0 from '\x00#\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00$\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/05/08-19:30:26.343 36ef0 Compacting 1@1 + 4@2 files
+2025/05/08-19:30:26.434 36ef0 Generated table #142@1: 33921 keys, 2191336 bytes
+2025/05/08-19:30:26.469 36ef0 Generated table #143@1: 14684 keys, 2194262 bytes
+2025/05/08-19:30:26.521 36ef0 Generated table #144@1: 61276 keys, 2207474 bytes
+2025/05/08-19:30:26.555 36ef0 Generated table #145@1: 48280 keys, 1026250 bytes
+2025/05/08-19:30:26.555 36ef0 Compacted 1@1 + 4@2 files => 7619322 bytes
+2025/05/08-19:30:26.557 36ef0 compacted to: files[ 0 0 4 0 0 0 0 ]
+2025/05/08-19:30:26.558 36ef0 Delete type=2 #136
+2025/05/08-19:30:26.558 36ef0 Delete type=2 #141
+2025/05/08-19:30:26.558 36ef0 Delete type=2 #135
+2025/05/08-19:30:26.558 36ef0 Delete type=2 #138
+2025/05/08-19:30:26.558 36ef0 Delete type=2 #137
