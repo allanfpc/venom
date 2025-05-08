@@ -13,7 +13,6 @@ venom
     multidevice: true,
     headless: true,
     browserArgs: ['--headless=new'],
-    executablePath: '/usr/bin/google-chrome-stable'
   })
   .then((client) => start(client))
   .catch((erro) => {
