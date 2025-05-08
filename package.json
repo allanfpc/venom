@@ -12,7 +12,6 @@
   "type": "commonjs",
   "dependencies": {
     "express": "^5.1.0",
-    "multer": "^1.4.5-lts.2",
     "venom-bot": "^5.3.0"
   }
 }
