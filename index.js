@@ -22,7 +22,8 @@ venom
     multidevice: true,
     headless: 'new',
     browserArgs: ['--no-sandbox','--disable-setuid-sandbox','--headless=new'],
-    browserPathExecutable: '/usr/bin/google-chrome-stable'
+    browserPathExecutable: '/usr/bin/google-chrome-stable',
+    sessionTokenDir: '/tmp/tokens',
   })
   .then((client) => {
     clientGlobal = client;
