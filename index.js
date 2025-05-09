@@ -1,80 +1,74 @@
 const venom = require('venom-bot');
 const express = require('express');
-const app = express();
 const fs = require('fs');
 const path = require('path');
-const uploadDir = path.join(__dirname, 'uploads');  // Diretório de uploads temporários
 
+const app = express();
 app.use(express.json());
 
+const uploadDir = path.join(__dirname, 'uploads');
+let clientGlobal = null; // cliente venom global
+
+// Subir o servidor Express imediatamente
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
+
+// Inicializar o Venom de forma assíncrona
 venom
   .create({
     session: 'loja',
     multidevice: true,
     headless: 'new',
-    browserArgs: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--headless=new'
-    ],
-    sessionPath: '/tmp/venom_sessions', // <-- importante: sessão temporária
-    browserPathExecutable: '/usr/bin/google-chrome-stable' // garante que pegue o Chrome instalado no Docker
+    browserArgs: ['--headless=new'],
+    sessionPath: '/tmp/venom_sessions',
+    browserPathExecutable: '/usr/bin/google-chrome-stable'
   })
-  .then((client) => start(client))
-  .catch((erro) => {
-    console.log(erro);
+  .then((client) => {
+    clientGlobal = client;
+    console.log('Venom iniciado com sucesso');
+  })
+  .catch((err) => {
+    console.error('Erro ao iniciar o Venom:', err);
   });
 
-function start(client) {
+// Endpoints (funcionam mesmo se Venom ainda estiver iniciando)
 
-  app.post('/send-message', async (req, res) => {
-   const { phone, message } = req.body;
+app.post('/send-message', async (req, res) => {
+  if (!clientGlobal) return res.status(503).json({ error: 'Venom ainda está iniciando' });
 
-   if (!phone || !message) {
-     return res.status(400).json({ error: 'phone and message are required' });
-   }
-
-   try {
-     const fullPhone = phone.endsWith('@c.us') ? phone : `${phone}@c.us`;
-     const response = await client.sendText(fullPhone, message);
-     res.status(200).json({ success: true, response });
-   } catch (err) {
-     console.error('Error sending message:', err);
-     res.status(500).json({ success: false, error: err.message });
-   }
-  });
-
-  // Rota para enviar arquivos (PDF/Base64)
-app.post('/send-file', async (req, res) => {
-  const {phone, caption, fileBase64, filename } = req.body;
-  if (!phone || !fileBase64 || !filename) {
-    return res.status(400).json({ error: 'phone, fileBase64 e filename são obrigatórios' });
-  }
+  const { phone, message } = req.body;
+  if (!phone || !message) return res.status(400).json({ error: 'phone e message são obrigatórios' });
 
   try {
-    // Decodifica a base64 para binário
-    const buffer = Buffer.from(fileBase64, 'base64');
+    const fullPhone = phone.endsWith('@c.us') ? phone : `${phone}@c.us`;
+    const response = await clientGlobal.sendText(fullPhone, message);
+    res.status(200).json({ success: true, response });
+  } catch (err) {
+    console.error('Erro ao enviar mensagem:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
-    // Cria o caminho temporário para salvar o arquivo
+app.post('/send-file', async (req, res) => {
+  if (!clientGlobal) return res.status(503).json({ error: 'Venom ainda está iniciando' });
+
+  const { phone, caption, fileBase64, filename } = req.body;
+  if (!phone || !fileBase64 || !filename)
+    return res.status(400).json({ error: 'phone, fileBase64 e filename são obrigatórios' });
+
+  try {
+    const buffer = Buffer.from(fileBase64, 'base64');
     const filePath = path.join(uploadDir, filename);
 
-    // Escreve o arquivo temporário
     fs.writeFileSync(filePath, buffer);
-
-    // Envia o arquivo para o WhatsApp
-    await client.sendFile(`${phone}@c.us`, filePath, filename, caption);
-
-    // Remove o arquivo temporário após o envio
+    await clientGlobal.sendFile(`${phone}@c.us`, filePath, filename, caption);
     fs.unlinkSync(filePath);
 
     res.status(200).json({ success: true, message: 'Arquivo enviado com sucesso!' });
   } catch (err) {
-    console.error('Erro ao enviar o arquivo para o número:', err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error('Erro ao enviar arquivo:', err);
+    res.status(500).json({ error: err.message });
   }
 });
-  // Inicia o servidor
-  app.listen(3000, () => {
-    console.log('Servidor rodando em http://localhost:3000');
-  });
-}
