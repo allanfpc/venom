@@ -11,8 +11,14 @@ venom
   .create({
     session: 'loja',
     multidevice: true,
-    headless: true,
-    browserArgs: ['--headless=new'],
+    headless: 'new',
+    browserArgs: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--headless=new'
+    ],
+    sessionPath: '/tmp/venom_sessions', // <-- importante: sessão temporária
+    browserPathExecutable: '/usr/bin/google-chrome-stable' // garante que pegue o Chrome instalado no Docker
   })
   .then((client) => start(client))
   .catch((erro) => {

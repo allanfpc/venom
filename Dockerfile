@@ -49,5 +49,8 @@ RUN mkdir -p /app/uploads
 # Expor a porta usada
 EXPOSE 3000
 
+# Define variáveis de ambiente necessárias
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+
 # Iniciar aplicação
 CMD ["node", "index.js"]
