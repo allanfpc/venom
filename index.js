@@ -33,6 +33,9 @@ venom
   });
 
 // Endpoints (funcionam mesmo se Venom ainda estiver iniciando)
+app.get('/test', async(req,res) => {
+  return res.status(200).json({success: true})
+})
 
 app.post('/send-message', async (req, res) => {
   if (!clientGlobal) return res.status(503).json({ error: 'Venom ainda está iniciando' });
