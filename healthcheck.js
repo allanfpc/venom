@@ -1,8 +1,20 @@
 const axios = require('axios');
 const { exec } = require('child_process');
 
+console.log(process.env);
+
 // === CONFIGURAÇÕES ===
-const ENDPOINT_URL = 'http://ec2-3-141-4-115.us-east-2.compute.amazonaws.com:3000/send-message'; // seu endpoint POST
+if(!process.env.PORT) {
+  console.error("PORT environment variable not set. Exiting...");
+  process.exit(1);
+}
+
+if(!process.env.HOST || !process.env.ROUTE) {
+  console.error("HOST related environment variables not set. Exiting...");
+  process.exit(1);
+}
+
+const ENDPOINT_URL = `${process.env.HOST}:${process.env.PORT}/${process.env.ROUTE}`
 const TIMEOUT_MS = 5000; // tempo máximo de espera
 const TEST_NUMBER = '000000000000'; // número fake para teste
 const TEST_MESSAGE = 'healthcheck';

@@ -4,7 +4,11 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const sessionName = 'loja';
+if (!process.env.PORT) {
+  console.error("PORT environment variable not set. Exiting...");
+  process.exit(1);
+}
+
 const app = express();
 app.use(express.json());
 
@@ -16,9 +20,10 @@ const publicDir = path.join(__dirname, 'public');
 if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir);
 app.use(express.static(publicDir));
 
+let sessionName = 'loja';
 let clientGlobal = null;
+let PORT = process.env.PORT;
 
-const PORT = process.env.PORT || 3000;
 
 venom
   .create({
