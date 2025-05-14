@@ -1,0 +1,16 @@
+# Ignorar arquivos secretos
+tokens/*
+
+# Ignorar arquivos temporários
+*.log
+*.tmp
+
+# Ignorar a pasta node_modules
+node_modules/
+
+# Ignorar arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos de ambiente
+.env
